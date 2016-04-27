@@ -1,15 +1,7 @@
-table, td, tr{
-    border: 1px solid black;
-}
+
 
 table {
 	margin: auto;
-}
-
-td {
-	width: 20vh;
-	height: 20vh;
-
 }
 
 #title{
@@ -22,14 +14,36 @@ td {
 }
 
 .box{
-	font-size: 150%;
+	font-size: 15vh;
+	font-weight: bold;
 	text-align: center;
+	width: 20vh;
+	height: 20vh;
 }
 
 .playerX{
-	color: red;
+	color: #FE4365;
 }
 
 .playerO{
-	color: blue;
+	color: #83AF9B;
+}
+
+#rematchButton{
+	margin-top: 5px;
+	margin-bottom: 5px;
+	display: block;
+	width: 40vh;
+	margin: auto;
+}
+
+#scoreTitle{
+	text-align: center;
+}
+
+.score{
+	text-align: center;
+	font-size: 150%;
+	height: 5vh;
+	width: 15vh;
 }

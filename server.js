@@ -59,6 +59,16 @@ function removeDisconnectedPlayer(socket){
 	}
 }
 
+//This is used to switch who starts the game at every new game
+function randomizePlayerTurn(playerData){
+	turn = assignTurn()
+	
+	playerData[0].turn = turn[0]
+	playerData[1].turn = turn[1]
+	
+	return playerData
+}
+
 letters = assignLetter()
 turn = assignTurn()
 playerData = []
@@ -97,8 +107,12 @@ io.on('connection', function(socket){
 	socket.on("winner", function(player){
 		var otherPlayer = getOtherPlayer(player)
 		
-		io.to(player.id).emit("winnerDetermined", true)
-		io.to(otherPlayer.id).emit("winnerDetermined", false)
+		io.to(player.id).emit("winnerDetermined", {youWon: true, winningLetter: player.letter})
+		io.to(otherPlayer.id).emit("winnerDetermined", {youWon: false, winningLetter: player.letter})
+	})
+	
+	socket.on("tie", function(){
+		io.sockets.emit("tie")
 	})
 	
 	socket.on("playedMove", function(movePlayed){
@@ -110,6 +124,18 @@ io.on('connection', function(socket){
 		}
 		io.to(otherPlayer.id).emit("yourTurn", info)
 		io.to(movePlayed.player.id).emit("otherTurn")
+	})
+	
+	playersRematch = 0
+	
+	socket.on("restartGame", function(){
+		playersRematch ++
+		if (playersRematch == 2){
+			newPlayerData = randomizePlayerTurn(playerData)
+			io.to(playerData[0].id).emit("gameRestarted", newPlayerData[0])
+			io.to(playerData[1].id).emit("gameRestarted", newPlayerData[1])
+			playersRematch = 0
+		}
 	})
 	
 })

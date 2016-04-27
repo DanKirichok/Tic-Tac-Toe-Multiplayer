@@ -5,6 +5,17 @@ playerData = null;
 yourTurn = null;
 canPlay = false;
 
+//This rotates the spinny symbol
+degreeRotation = 0 
+function spinObject(){
+	document.getElementsByClassName("waitSpinner")[0].style.transform = "rotate(" + degreeRotation + "deg)"
+	document.getElementsByClassName("waitSpinner")[1].style.transform = "rotate(" + degreeRotation + "deg)"
+	degreeRotation += 10
+}
+
+var loop = setInterval(spinObject, 1000/60)
+
+
 //This function returns text based on if it is your turn
 function checkTurn(){
 	var turnText;
@@ -24,16 +35,20 @@ socket.on("connect", function(){
 //Gets player info and initializes turn, data and letter
 socket.on("playersJoined", function(joinInfo){
 	playerData = joinInfo
-	yourTurn = joinInfo.turn
-	document.getElementById("player").innerHTML = "Letter: " + joinInfo.letter
-
-	checkTurn()
+	document.getElementById("player").innerHTML = "Your Letter: " + joinInfo.letter
 })
+
+function gameStart(){
+	clearInterval(loop)
+	document.getElementById("gameState").innerHTML = "Game has started"
+	canPlay = true
+	yourTurn = playerData.turn
+	checkTurn()
+}
 
 //Runs once 2 people have joined
 socket.on("gameStart", function(){
-	document.getElementById("gameState").innerHTML = "Game has started"
-	canPlay = true
+	gameStart()
 })
 
 //Runs when player disconnected
@@ -42,14 +57,62 @@ socket.on("playerDisconnect", function(){
 	canPlay = false
 })
 
+function restartGame(){
+	document.getElementById("rematchButton").remove()
+	socket.emit("restartGame")
+}
+
+function resetBoxes(){
+	for (var i = 1; i < 10; i ++){
+		document.getElementById(i.toString()).innerHTML = ""
+		document.getElementById(i.toString()).className = "box"
+		
+	}
+	
+}
+
+socket.on("gameRestarted", function(newPlayerData){
+	playerData = newPlayerData
+	resetBoxes()
+	canPlay = true
+	gameStart()
+})
+
+function createRematchButton(){
+	var rematchBtn = document.createElement("button")
+	
+	var rematchText = document.createTextNode("Rematch?")
+	
+	rematchBtn.appendChild(rematchText)
+	rematchBtn.setAttribute("id", "rematchButton")
+	rematchBtn.setAttribute("class", "btn btn-info")
+	rematchBtn.setAttribute("onClick", "restartGame()")
+	
+	document.getElementById("gameState").appendChild(rematchBtn)
+}
+
+function addLetterToScoreboard(letter){
+	var newScore = Number(document.getElementById(letter + "Score").innerHTML)
+	newScore ++
+	document.getElementById(letter + "Score").innerHTML = newScore
+}
+
+function endGameInit(){
+	document.getElementById("turn").innerHTML = ""
+	createRematchButton()
+	canPlay = false
+}
+
 socket.on("winnerDetermined", function(winner){
-	if (winner){
+	if (winner.youWon){
 		document.getElementById("gameState").innerHTML = "You Won!"
 	}else{
 		document.getElementById("gameState").innerHTML = "You Lost..."
 	}
 	
-	canPlay = false
+	addLetterToScoreboard(winner.winningLetter)
+	
+	endGameInit()
 })
 
 //Changes class of box based on the letter that is in it
@@ -57,17 +120,27 @@ function addClassByLetter(boxId, letter){
 	if (letter == "X"){
 		document.getElementById(boxId).className += " playerX" 
 	}else if (letter == "O"){
-		document.getElementById(boxId).className += " playerY"
+		document.getElementById(boxId).className += " playerO"
 	}
 }
+
+socket.on("tie", function(){
+	document.getElementById("gameState").innerHTML = "You tied"
+	endGameInit()
+	addLetterToScoreboard("tie")
+})
 
 //Switches turns and checks for winner
 socket.on("otherTurn", function(){
 	if (checkWinner()){
 		socket.emit("winner", playerData)
 	}else{
-		yourTurn = false
-		checkTurn()
+		if (checkTie()){
+			socket.emit("tie")
+		}else{
+			yourTurn = false
+			checkTurn()
+		}
 	}
 })
 
@@ -85,12 +158,23 @@ socket.on("yourTurn", function(info){
 function areEqual(){
 	var len = arguments.length;
 	for (var i = 1; i< len; i++){
-		console.log(arguments[i])
 		if (arguments[i] == null || arguments[i] == "" || arguments[i] != arguments[i-1]){
 			return false;
 		}
 	}
 	return true;
+}
+
+function checkTie(){
+	isTie = true
+	for (var i = 1; i < 10; i ++){
+		var box = document.getElementById(i.toString()).innerHTML
+		if (box == "" || box == null){
+			isTie = false
+		}
+	}
+	return isTie
+	
 }
 
 function checkWinner(){

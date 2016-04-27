@@ -1,17 +1,18 @@
 <html>
     <head>
         <title>Tic-Tac-Toe</title>
-        <link rel="stylesheet" type="text/css" href="style.css">
         <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="style.css">
+        <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
     </head>
     <body>
         <h1 id = "title">Tic-Tac-Toe</h1>
 		<div id = "gameInfo">
 			<div id = "player"></div>
-			<div id = "gameState">Waiting For Players to Join</div>
+			<div id = "gameState"><i class="waitSpinner fa fa-spinner" aria-hidden="true"></i> Waiting For Other Player <i class=" waitSpinner fa fa-spinner" aria-hidden="true"></i></div>
 			<div id = "turn"></div>
 		</div>
-        <table id = "TicTacToeBoard">
+        <table class = "table-bordered" id = "TicTacToeBoard">
             <tr>
                 <td onclick = "boxClick(this)" class = "box" id = "1"></td>
                 <td onclick = "boxClick(this)" class = "box" id = "2"></td>
@@ -28,6 +29,19 @@
                 <td onclick = "boxClick(this)" class = "box" id = "9"></td>
             </tr>
         </table>
+        <h3 id = "scoreTitle">Scoreboard</h3>
+        <table class = "table-bordered" id = "scoreBoard">
+			<tr>
+				<td class = "score">X</td>
+				<td class = "score">Tie</td>
+				<td class = "score">O</td>
+			</tr>
+			<tr>
+				<td class = "score" id = "XScore">0</td>
+				<td class = "score" id = "tieScore">0</td>
+				<td class = "score" id = "OScore">0</td>
+			</tr>
+		</table>
         <script src="/socket.io/socket.io.js"></script>
         <script src = "game.js"></script>
     </body>
