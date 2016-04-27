@@ -13,7 +13,7 @@ function spinObject(){
 	degreeRotation += 10
 }
 
-loop = setInterval(spinObject, 1000/60)
+var loop = setInterval(spinObject, 1000/60)
 
 
 //This function returns text based on if it is your turn
@@ -59,21 +59,9 @@ socket.on("playerDisconnect", function(){
 
 function restartGame(){
 	document.getElementById("rematchButton").remove()
-	var waitSpinner1 = document.createElement("i")
-	var waitSpinner2 = document.createElement("i")
-	
-	waitSpinner1.setAttribute("class", "waitSpinner fa fa-spinner")
-	waitSpinner2.setAttribute("class", "waitSpinner fa fa-spinner")
-	
-	var waitText = document.createTextNode(" Waiting for opponent ")
-	
-	document.getElementById("gameState").innerHTML = ""
-	
-	document.getElementById("gameState").appendChild(waitSpinner1)
-	document.getElementById("gameState").appendChild(waitText)
-	document.getElementById("gameState").appendChild(waitSpinner2)
-	
-	loop = setInterval(spinObject, 1000/60)
+	var waitSpinner = document.createElement("i")
+	waitSpinner.setAttribute("class", "waitSpinner fa fa-spinner")
+	waitSpinner.setAttribute("aria-hidden", "true")
 	
 	socket.emit("restartGame")
 }
