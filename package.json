@@ -1,0 +1,18 @@
+{
+  "name": "tic-tac-toe",
+  "version": "1.0.0",
+  "description": "Multiplayer Tic Tac Toe",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "author": "Dan Kirichok",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.13.4",
+    "http": "0.0.0",
+    "path": "^0.12.7",
+    "socket.io": "^1.4.5"
+  }
+}

@@ -1,0 +1,35 @@
+table, td, tr{
+    border: 1px solid black;
+}
+
+table {
+	margin: auto;
+}
+
+td {
+	width: 20vh;
+	height: 20vh;
+
+}
+
+#title{
+	text-align: center;
+}
+
+#gameInfo{
+	text-align: center;
+	font-size: 150%;
+}
+
+.box{
+	font-size: 150%;
+	text-align: center;
+}
+
+.playerX{
+	color: red;
+}
+
+.playerO{
+	color: blue;
+}
