@@ -13,7 +13,9 @@ canPlay = false;
 degreeRotation = 0 
 function spinObject(){
 	document.getElementsByClassName("waitSpinner")[0].style.transform = "rotate(" + degreeRotation + "deg)"
+	document.getElementsByClassName("waitSpinner")[0].style.webkitTransform = "rotate(" + degreeRotation + "deg)"
 	document.getElementsByClassName("waitSpinner")[1].style.transform = "rotate(" + degreeRotation + "deg)"
+	document.getElementsByClassName("waitSpinner")[1].style.webkitTransform = "rotate(" + degreeRotation + "deg)"
 	degreeRotation += 10
 }
 
