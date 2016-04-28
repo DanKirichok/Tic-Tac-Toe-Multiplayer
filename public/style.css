@@ -21,20 +21,24 @@ table {
 	height: 20vh;
 }
 
+#gameState{
+	font-weight: bold;
+}
+
+.yourTurn{
+	font-weight: bold;
+}
+
+.notYourTurn{
+	opacity: .4
+}
+
 .playerX{
 	color: #FE4365;
 }
 
 .playerO{
 	color: #83AF9B;
-}
-
-#rematchButton{
-	margin-top: 5px;
-	margin-bottom: 5px;
-	display: block;
-	width: 40vh;
-	margin: auto;
 }
 
 #scoreTitle{
@@ -46,4 +50,11 @@ table {
 	font-size: 150%;
 	height: 5vh;
 	width: 15vh;
+}
+.actionBtn{
+	display: block;
+	margin: auto;
+	width: 40vh;
+	margin-top: 5px;
+	margin-bottom: 5px;
 }

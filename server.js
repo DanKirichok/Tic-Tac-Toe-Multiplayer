@@ -36,7 +36,22 @@ function assignTurn(){
 	return turn
 }
 
+//This is when you don't have the playerData and you only have the player Id.
+//This returns the whole player data when only the playerId is available
+function findOtherPlayer(playerId){
+	for (var room in gameRooms){
+		for (var i = 0; i < gameRooms[room].length; i++){
+			gameRooms[room][i].id
+			if (playerId == gameRooms[room][i].id){
+				return gameRooms[room][i]
+			}
+		}
+	}
+}
+
+//This is when you have the playerData
 function getOtherPlayer(player){
+	var playerData = gameRooms[player.roomId]
 	var otherPlayer;
 	
 	if (playerData[0].playerNumber == player.playerNumber){
@@ -48,13 +63,15 @@ function getOtherPlayer(player){
 	return otherPlayer
 }
 
-
-function removeDisconnectedPlayer(socket){
-	for (i = 0; i < playerData.length; i ++){
-		var currentSocket = playerData[i]
-		if (currentSocket.id == socket.id){
-			playerData.splice(i, 1)
-			break
+function findPlayerRoom(playerId){
+	console.log(playerId)
+	console.log(gameRooms)
+	for (var room in gameRooms){
+		for (var i = 0; i < gameRooms[room].length; i++){
+			gameRooms[room][i].id
+			if (playerId == gameRooms[room][i].id){
+				return room
+			}
 		}
 	}
 }
@@ -69,39 +86,64 @@ function randomizePlayerTurn(playerData){
 	return playerData
 }
 
-letters = assignLetter()
-turn = assignTurn()
-playerData = []
+function getRoomId(){
+	return getRandomInt(1, 10000)
+}
+
+function initStartValues(){
+	letters = assignLetter()
+	turn = assignTurn()
+	playerData = []
+	usersOn = 1
+	roomId = getRoomId()
+}
+
+
+initStartValues()
+
+gameRooms = {}
 
 io.on('connection', function(socket){
-	console.log("Connection")
-	usersOn = socket.conn.server.clientsCount
+	console.log("\nConnection")
 	
 	joinInfo = {}
  	
 	joinInfo = {
 		id: socket.id,
+		roomId: roomId,
 		playerNumber: usersOn,
 		letter: letters[(usersOn - 1)],
 		turn: turn[usersOn - 1],
 	}
 	
 	playerData.push(joinInfo)
+	
+	usersOn ++
 		
 	socket.emit("playersJoined", joinInfo)
-        
-    if (usersOn == 2){
+	
+	//if (Object.keys(gameRooms).length == 0){}
+	
+    if (usersOn > 2){
+		gameRooms[roomId] = playerData
+		console.log(gameRooms)
+		initStartValues()
         io.sockets.emit("gameStart")
     }
     
+    //////////////
+    //DISCONNECT//
+    //////////////
 	socket.on('disconnect', function(){
         console.log("Disconnect")
-        		
-		removeDisconnectedPlayer(socket)
-				
-		io.sockets.emit("playerDisconnect")
+  
+		var otherPlayerInfo = findOtherPlayer(socket.id)
 		
-		usersOn -= 1
+		if (otherPlayerInfo != null){
+			var otherPlayer = getOtherPlayer(otherPlayerInfo)
+		
+			io.to(otherPlayer.id).emit("playerDisconnect")
+		}
 	})
 	
 	socket.on("winner", function(player){
@@ -118,6 +160,8 @@ io.on('connection', function(socket){
 	socket.on("playedMove", function(movePlayed){
 		var otherPlayer = getOtherPlayer(movePlayed.player)
 		
+		var playerRoom = movePlayed.player.roomId
+		
 		info = {
 			boxPlayed: movePlayed.box,
 			letter: movePlayed.player.letter
@@ -128,12 +172,12 @@ io.on('connection', function(socket){
 	
 	playersRematch = 0
 	
-	socket.on("restartGame", function(){
+	socket.on("restartGame", function(roomId){
 		playersRematch ++
 		if (playersRematch == 2){
-			newPlayerData = randomizePlayerTurn(playerData)
-			io.to(playerData[0].id).emit("gameRestarted", newPlayerData[0])
-			io.to(playerData[1].id).emit("gameRestarted", newPlayerData[1])
+			newPlayerData = randomizePlayerTurn(gameRooms[roomId])
+			io.to(gameRooms[roomId][0].id).emit("gameRestarted", newPlayerData[0])
+			io.to(gameRooms[roomId][1].id).emit("gameRestarted", newPlayerData[1])
 			playersRematch = 0
 		}
 	})
@@ -141,14 +185,14 @@ io.on('connection', function(socket){
 })
 
 //This is for openshift deployment
-var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
+/*var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
 var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 
 http.listen(port, ipaddress, function(){
 	console.log('listening on *:4000')
-})
+})*/
 
 //This is for testing
-/*http.listen(4000, function(){
+http.listen(4000, function(){
 	console.log('listening on *:4000')
-})*/
+})
