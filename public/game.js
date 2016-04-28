@@ -265,7 +265,14 @@ function checkTie(){
 		}
 	}
 	return isTie
-	
+}
+
+function prepareGameState(){
+	boxContent = {}
+	for (var i = 1; i < 10; i++){
+		boxContent[i] = document.getElementById(i.toString()).innerHTML
+	}
+	console.log(prepareGameState)
 }
 
 function checkWinner(){
