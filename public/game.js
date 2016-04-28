@@ -5,6 +5,16 @@ playerData = null;
 yourTurn = null;
 canPlay = false;
 
+//////////////////////////////////////////////
+//fastclick.js initializer.			   	   //
+//This removes delay for mobile button tap//
+///////////////////////////////////////////
+if ('addEventListener' in document) {
+    document.addEventListener('DOMContentLoaded', function() {
+        FastClick.attach(document.body);
+    }, false);
+}
+
 /////////////////////////////////////////////////////////////////////
 //This happens initially when player is waiting for someone to join//
 /////////////////////////////////////////////////////////////////////
@@ -53,7 +63,7 @@ function checkTurn(){
 		document.getElementById("turn").innerHTML = turnText
 		document.getElementById("turn").className = "yourTurn"
 	}else{
-		turnText = "Oponnent Making Move"
+		turnText = " Oponnent's Turn "
 		document.getElementById("turn").className = "notYourTurn"
 		sandwichWithSpinners("turn", turnText)
 		
@@ -113,7 +123,9 @@ function createFindGameButton(){
 
 //Runs when player disconnected
 socket.on("playerDisconnect", function(){
-	document.getElementById("gameState").innerHTML = "The other player left"
+	document.getElementById("gameState").innerHTML = "Opponent left"
+	
+	document.getElementById("turn").innerHTML = ""
 	createFindGameButton()
 	
 	canPlay = false

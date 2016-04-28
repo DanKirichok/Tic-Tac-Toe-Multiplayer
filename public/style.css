@@ -6,19 +6,32 @@ table {
 
 #title{
 	text-align: center;
+	font-size: 400%;
+	color: #77aaff;
+	font-weight: 900;
+}
+
+#subtitle{
+	font-size: 250%;
+	margin: none;
+	padding: none;
+	text-align: center;
+	color: #ff77aa;
+	font-weight: 900;
 }
 
 #gameInfo{
+	margin: 20px;
 	text-align: center;
-	font-size: 150%;
+	font-size: 200%;
 }
 
 .box{
 	font-size: 15vh;
 	font-weight: bold;
 	text-align: center;
-	width: 20vh;
-	height: 20vh;
+	width: 18vh;
+	height: 18vh;
 }
 
 #gameState{
@@ -34,11 +47,25 @@ table {
 }
 
 .playerX{
-	color: #FE4365;
+	color: #ff77aa;
+}
+
+#XTag{
+	color: #ff77aa;
+	font-weight: bold;
+}
+
+#tieTag{
+	font-weight: bold;
+}
+
+#OTag{
+	color: #77aaff;
+	font-weight: bold;
 }
 
 .playerO{
-	color: #83AF9B;
+	color: #77aaff;
 }
 
 #scoreTitle{
@@ -47,14 +74,23 @@ table {
 
 .score{
 	text-align: center;
-	font-size: 150%;
+	font-size: 200%;
 	height: 5vh;
-	width: 15vh;
+	width: 18vh;
 }
+
+
 .actionBtn{
 	display: block;
 	margin: auto;
 	width: 40vh;
 	margin-top: 5px;
 	margin-bottom: 5px;
+	background-color: #77aaff;
+	font-size: 100% !important;
+	outline: none !important;
+}
+
+#scoreBoard{
+	margin-top: 20px;
 }
