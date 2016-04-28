@@ -15,6 +15,10 @@ if ('addEventListener' in document) {
     }, false);
 }
 
+function refreshPage(){
+	location.reload()
+}
+
 /////////////////////////////////////////////////////////////////////
 //This happens initially when player is waiting for someone to join//
 /////////////////////////////////////////////////////////////////////
@@ -31,9 +35,10 @@ function spinObject(){
 
 loop = setInterval(spinObject, 1000/60)
 
-////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////
-
+///////////////////////////////////////////
+//These functions create various elements//
+///////////////////////////////////////////
+//This sandwiches text with the spinners
 function sandwichWithSpinners(elementId, sandwichText){
 	var waitSpinner1 = document.createElement("i")
 	var waitSpinner2 = document.createElement("i")
@@ -45,7 +50,6 @@ function sandwichWithSpinners(elementId, sandwichText){
 	
 	document.getElementById(elementId).innerHTML = ""
 	
-	//This puts the waiting for opponent text when you click rematch button
 	document.getElementById(elementId).appendChild(waitSpinner1)
 	document.getElementById(elementId).appendChild(waitText)
 	document.getElementById(elementId).appendChild(waitSpinner2)
@@ -53,6 +57,52 @@ function sandwichWithSpinners(elementId, sandwichText){
 	loop = setInterval(spinObject, 1000/60)
 }
 
+//Creates a rematch button
+function createRematchButton(){	
+	var rematchBtn = document.createElement("button")
+	
+	var rematchText = document.createTextNode("Rematch?")
+	
+	rematchBtn.appendChild(rematchText)
+	rematchBtn.setAttribute("id", "rematchButton")
+	rematchBtn.setAttribute("class", "actionBtn btn btn-info")
+	rematchBtn.setAttribute("onClick", "restartGame()")
+	
+	document.getElementById("gameState").appendChild(rematchBtn)
+}
+
+//This is the button that is made when opponent leaves to find a new game
+function createFindGameButton(){
+	var findGame = document.createElement("button")
+	findGame.setAttribute("class", "actionBtn btn btn-info")
+	findGame.setAttribute("id", "findGameButton")
+	findGame.setAttribute("onClick", "refreshPage()")
+	
+	var findGameText = document.createTextNode("Find New Game")
+	
+	findGame.appendChild(findGameText)
+	
+	document.getElementById("gameState").appendChild(findGame)
+}
+////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////
+
+////////////////////////////////////////////////////////////////////////////
+//These functions deal with reseting the game board when a new game starts//
+////////////////////////////////////////////////////////////////////////////
+function resetBoxes(){
+	for (var i = 1; i < 10; i ++){
+		document.getElementById(i.toString()).innerHTML = ""
+		document.getElementById(i.toString()).className = "box"
+	}	
+}
+function resetScoreboard(){
+	document.getElementById("XScore").innerHTML = "0"
+	document.getElementById("tieScore").innerHTML = "0"
+	document.getElementById("OScore").innerHTML = "0"
+}
+////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////
 
 //This function returns text based on if it is your turn
 function checkTurn(){
@@ -70,13 +120,9 @@ function checkTurn(){
 	}
 }
 
-//Resets the scoreboard
-function resetScoreboard(){
-	document.getElementById("XScore").innerHTML = "0"
-	document.getElementById("tieScore").innerHTML = "0"
-	document.getElementById("OScore").innerHTML = "0"
-}
-
+//////////////////////////////////////////////////////
+//These functions deal with start of the game things//
+//////////////////////////////////////////////////////
 socket.on("connect", function(){
 	//Resets boxes to make sure none are already there when page loads
 	resetBoxes()
@@ -102,64 +148,29 @@ function gameStart(){
 socket.on("gameStart", function(){
 	gameStart()
 })
+//////////////////////////////////////////////////////
+//////////////////////////////////////////////////////
 
-function refreshPage(){
-	location.reload()
-}
-
-//This is the button that is made when opponent leaves
-function createFindGameButton(){
-	var findGame = document.createElement("button")
-	findGame.setAttribute("class", "actionBtn btn btn-info")
-	findGame.setAttribute("id", "findGameButton")
-	findGame.setAttribute("onClick", "refreshPage()")
-	
-	var findGameText = document.createTextNode("Find New Game")
-	
-	findGame.appendChild(findGameText)
-	
-	document.getElementById("gameState").appendChild(findGame)
-}
-
-//Runs when player disconnected
+//Runs when other player disconnected
 socket.on("playerDisconnect", function(){
+	//This clears any spinners if they are running
+	clearInterval(loop)
+		
 	document.getElementById("gameState").innerHTML = "Opponent left"
 	
 	document.getElementById("turn").innerHTML = ""
 	createFindGameButton()
-	
 	canPlay = false
+	
 })
 
 function restartGame(){
+	console.log(10)
 	document.getElementById("rematchButton").remove()
-	var waitSpinner1 = document.createElement("i")
-	var waitSpinner2 = document.createElement("i")
-	
-	waitSpinner1.setAttribute("class", "waitSpinner fa fa-spinner")
-	waitSpinner2.setAttribute("class", "waitSpinner fa fa-spinner")
-	
-	var waitText = document.createTextNode(" Waiting for opponent ")
-	
-	document.getElementById("gameState").innerHTML = ""
-	
-	//This puts the waiting for opponent text when you click rematch button
-	document.getElementById("gameState").appendChild(waitSpinner1)
-	document.getElementById("gameState").appendChild(waitText)
-	document.getElementById("gameState").appendChild(waitSpinner2)
-	
-	loop = setInterval(spinObject, 1000/60)
+	sandwichWithSpinners("gameState", " Waiting for Opponent ")
 
 	var roomId = playerData.roomId
 	socket.emit("restartGame", roomId)
-}
-
-function resetBoxes(){
-	for (var i = 1; i < 10; i ++){
-		document.getElementById(i.toString()).innerHTML = ""
-		document.getElementById(i.toString()).className = "box"
-	}
-	
 }
 
 socket.on("gameRestarted", function(newPlayerData){
@@ -168,19 +179,6 @@ socket.on("gameRestarted", function(newPlayerData){
 	canPlay = true
 	gameStart()
 })
-
-function createRematchButton(){
-	var rematchBtn = document.createElement("button")
-	
-	var rematchText = document.createTextNode("Rematch?")
-	
-	rematchBtn.appendChild(rematchText)
-	rematchBtn.setAttribute("id", "rematchButton")
-	rematchBtn.setAttribute("class", "actionBtn btn btn-info")
-	rematchBtn.setAttribute("onClick", "restartGame()")
-	
-	document.getElementById("gameState").appendChild(rematchBtn)
-}
 
 //Updates the scoreboard based on what letter is entered
 function addLetterToScoreboard(letter){
@@ -229,7 +227,7 @@ socket.on("otherTurn", function(){
 		socket.emit("winner", playerData)
 	}else{
 		if (checkTie()){
-			socket.emit("tie")
+			socket.emit("tie", playerData.roomId)
 		}else{
 			yourTurn = false
 			checkTurn()
@@ -327,8 +325,6 @@ function checkWinner(){
 	
 	return isWinner
 }
-
-
 
 function boxClick(box){
 	if (canPlay){

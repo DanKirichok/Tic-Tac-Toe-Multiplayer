@@ -64,8 +64,6 @@ function getOtherPlayer(player){
 }
 
 function findPlayerRoom(playerId){
-	console.log(playerId)
-	console.log(gameRooms)
 	for (var room in gameRooms){
 		for (var i = 0; i < gameRooms[room].length; i++){
 			gameRooms[room][i].id
@@ -74,6 +72,9 @@ function findPlayerRoom(playerId){
 			}
 		}
 	}
+	
+	//This means the player does not have a room
+	return false
 }
 
 //This is used to switch who starts the game at every new game
@@ -98,6 +99,14 @@ function initStartValues(){
 	roomId = getRoomId()
 }
 
+function removePlayerFromRoom(playerId){
+	for (var i = 0; i < playerData.length; i++){
+		if (playerId == playerData[i].id){
+			playerData.splice(i, 1)
+			return
+		}
+	}
+}
 
 initStartValues()
 
@@ -126,25 +135,10 @@ io.on('connection', function(socket){
 	
     if (usersOn > 2){
 		gameRooms[roomId] = playerData
-		console.log(gameRooms)
+		io.to(playerData[0].id).emit("gameStart")
+		io.to(playerData[1].id).emit("gameStart")
 		initStartValues()
-        io.sockets.emit("gameStart")
     }
-    
-    //////////////
-    //DISCONNECT//
-    //////////////
-	socket.on('disconnect', function(){
-        console.log("Disconnect")
-  
-		var otherPlayerInfo = findOtherPlayer(socket.id)
-		
-		if (otherPlayerInfo != null){
-			var otherPlayer = getOtherPlayer(otherPlayerInfo)
-		
-			io.to(otherPlayer.id).emit("playerDisconnect")
-		}
-	})
 	
 	socket.on("winner", function(player){
 		var otherPlayer = getOtherPlayer(player)
@@ -153,8 +147,12 @@ io.on('connection', function(socket){
 		io.to(otherPlayer.id).emit("winnerDetermined", {youWon: false, winningLetter: player.letter})
 	})
 	
-	socket.on("tie", function(){
-		io.sockets.emit("tie")
+	////////////////////////////////////////////////////////////////////////////////
+	//CHANGE THIS WHEN YOU HAVE THE CHANCE IT EMITS TO ALL PLAYERS WHEN IT SHOULDN'T
+	////////////////////////////////////////////////////////////////////////////////
+	socket.on("tie", function(roomId){
+		io.to(gameRooms[roomId][0].id).emit("tie")
+		io.to(gameRooms[roomId][1].id).emit("tie")
 	})
 	
 	socket.on("playedMove", function(movePlayed){
@@ -182,17 +180,49 @@ io.on('connection', function(socket){
 		}
 	})
 	
+	//////////////
+    //DISCONNECT//
+    //////////////
+	socket.on('disconnect', function(){
+        console.log("\nDisconnect")
+		
+		removePlayerFromRoom(socket.id)
+		
+		//This means the player is along as he does not have a room
+		if (!findPlayerRoom(socket.id)){
+			initStartValues()
+		}else{
+			var otherPlayerInfo = findOtherPlayer(socket.id)
+			
+			console.log(otherPlayerInfo)
+			
+			if (otherPlayerInfo != null){
+				var otherPlayer = getOtherPlayer(otherPlayerInfo)
+				
+				console.log("\nGame Rooms:")
+				console.log(gameRooms)
+				
+				console.log("\nPlayer that left ID:")
+				console.log(socket.id)
+				
+				console.log("\nRemaining Player ID:")
+				console.log(otherPlayer.id)
+				
+				io.to(otherPlayer.id).emit("playerDisconnect")
+			}
+		}
+	})	
 })
 
 //This is for openshift deployment
-var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
+/*var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
 var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 
 http.listen(port, ipaddress, function(){
 	console.log('listening on *:4000')
-})
+})*/
 
 //This is for testing
-/*http.listen(4000, function(){
+http.listen(4000, function(){
 	console.log('listening on *:4000')
-})*/
+})
