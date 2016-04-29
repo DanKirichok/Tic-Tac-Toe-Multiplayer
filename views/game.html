@@ -6,14 +6,6 @@
         <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
     </head>
     <body>
-        <div id = "title">Tic Tac Toe</div>
-        <div id = "subtitle">Multiplayer Edition</div>
-		<div id = "gameInfo">
-			<div id = "roomId"></div>
-			<div id = "player"></div>
-			<div id = "gameState"><i class="waitSpinner fa fa-spinner" aria-hidden="true"></i> Searching for Opponent <i class=" waitSpinner fa fa-spinner" aria-hidden="true"></i></div>
-			<div id = "turn"></div>
-		</div>
         <table class = "table-bordered" id = "TicTacToeBoard">
             <tr>
                 <td onclick = "boxClick(this)" class = "box" id = "1"></td>
@@ -31,6 +23,12 @@
                 <td onclick = "boxClick(this)" class = "box" id = "9"></td>
             </tr>
         </table>
+        <div id = "gameInfo">
+			<div id = "roomId"></div>
+			<div id = "player"></div>
+			<div id = "gameState"><i class="waitSpinner fa fa-spinner" aria-hidden="true"></i> Searching for Opponent <i class=" waitSpinner fa fa-spinner" aria-hidden="true"></i></div>
+			<div id = "turn"></div>
+		</div>
         <table class = "table-bordered" id = "scoreBoard">
 			<tr>
 				<td id = "XTag" class = "score">X</td>
@@ -43,6 +41,7 @@
 				<td class = "score" id = "OScore">0</td>
 			</tr>
 		</table>
+		
 		<script src = "fastclick.js"></script>
         <script src="/socket.io/socket.io.js"></script>
         <script src = "game.js"></script>

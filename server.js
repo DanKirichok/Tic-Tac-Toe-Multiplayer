@@ -6,8 +6,12 @@ var io = require('socket.io')(http)
 
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.get('/game', function(req, res){
+	res.sendFile(__dirname + '/views/game.html')
+})
+
 app.get('/', function(req, res){
-	res.sendFile(__dirname + '/index.html')
+	res.sendFile(__dirname + '/views/index.html')
 })
 
 function getRandomInt(min, max){
@@ -116,7 +120,7 @@ io.on('connection', function(socket){
 	console.log("\nConnection")
 	
 	joinInfo = {}
- 	
+	
 	joinInfo = {
 		id: socket.id,
 		roomId: roomId,
@@ -131,14 +135,18 @@ io.on('connection', function(socket){
 		
 	socket.emit("playersJoined", joinInfo)
 	
-	//if (Object.keys(gameRooms).length == 0){}
-	
-    if (usersOn > 2){
+	socket.on("playerTimeout", function(playerInfo){
+		var otherPlayer = getOtherPlayer(playerInfo)
+		console.log(otherPlayer)		
+		socket.to(otherPlayer.id).emit("playerDisconnect")
+	})
+		
+	if (usersOn > 2){
 		gameRooms[roomId] = playerData
 		io.to(playerData[0].id).emit("gameStart")
 		io.to(playerData[1].id).emit("gameStart")
 		initStartValues()
-    }
+	}
 	
 	socket.on("winner", function(player){
 		var otherPlayer = getOtherPlayer(player)
@@ -147,9 +155,6 @@ io.on('connection', function(socket){
 		io.to(otherPlayer.id).emit("winnerDetermined", {youWon: false, winningLetter: player.letter})
 	})
 	
-	////////////////////////////////////////////////////////////////////////////////
-	//CHANGE THIS WHEN YOU HAVE THE CHANCE IT EMITS TO ALL PLAYERS WHEN IT SHOULDN'T
-	////////////////////////////////////////////////////////////////////////////////
 	socket.on("tie", function(roomId){
 		io.to(gameRooms[roomId][0].id).emit("tie")
 		io.to(gameRooms[roomId][1].id).emit("tie")
@@ -181,10 +186,10 @@ io.on('connection', function(socket){
 	})
 	
 	//////////////
-    //DISCONNECT//
-    //////////////
+	//DISCONNECT//
+	//////////////
 	socket.on('disconnect', function(){
-        console.log("\nDisconnect")
+		console.log("\nDisconnect")
 		
 		removePlayerFromRoom(socket.id)
 		
@@ -193,25 +198,13 @@ io.on('connection', function(socket){
 			initStartValues()
 		}else{
 			var otherPlayerInfo = findOtherPlayer(socket.id)
-			
-			console.log(otherPlayerInfo)
-			
+						
 			if (otherPlayerInfo != null){
 				var otherPlayer = getOtherPlayer(otherPlayerInfo)
-				
-				console.log("\nGame Rooms:")
-				console.log(gameRooms)
-				
-				console.log("\nPlayer that left ID:")
-				console.log(socket.id)
-				
-				console.log("\nRemaining Player ID:")
-				console.log(otherPlayer.id)
-				
 				io.to(otherPlayer.id).emit("playerDisconnect")
 			}
 		}
-	})	
+	})
 })
 
 //This is for openshift deployment

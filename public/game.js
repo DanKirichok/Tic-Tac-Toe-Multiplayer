@@ -5,6 +5,47 @@ playerData = null;
 yourTurn = null;
 canPlay = false;
 
+//This is the amount of seconds of no activity that will cause you to disconnect
+timeoutTime = 0;
+maxTimeoutTime = 30;
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+//These functions all deal with the internal timer that boots a player for too much inactivity//
+////////////////////////////////////////////////////////////////////////////////////////////////
+//This disconnects a player after a certain amount of time
+function startTimeoutTimer(){
+	timeoutTimer = setInterval(function(){
+		timeoutTime ++
+
+		if (timeoutTime > maxTimeoutTime){
+			clearInterval(timeoutTimer)
+			socket.emit("playerTimeout", playerData)
+			playerDisconnected("You Disconnected")
+		}
+	}, 1000)
+}
+
+function resetTimeoutTimer(){
+	timeoutTime = 0
+}
+
+function stopTimeoutTimer(){
+	clearInterval(timeoutTimer)
+}
+
+function addEventListenersToResetTimer(){
+	document.body.addEventListener("mousemove", resetTimeoutTimer);
+    document.body.addEventListener("mousedown", resetTimeoutTimer);
+    document.body.addEventListener("keypress", resetTimeoutTimer);
+    document.body.addEventListener("DOMMouseScroll", resetTimeoutTimer);
+    document.body.addEventListener("mousewheel", resetTimeoutTimer);
+    document.body.addEventListener("touchmove", resetTimeoutTimer);
+    document.body.addEventListener("MSPointerMove", resetTimeoutTimer);
+    document.body.addEventListener("touchstart", resetTimeoutTimer);
+    document.body.addEventListener("touchend", resetTimeoutTimer);
+}
+addEventListenersToResetTimer()
+
 //////////////////////////////////////////////
 //fastclick.js initializer.			   	   //
 //This removes delay for mobile button tap//
@@ -137,7 +178,9 @@ socket.on("playersJoined", function(joinInfo){
 })
 
 function gameStart(){
+	//Stops spinning the spinny things because they go away
 	clearInterval(loop)
+	startTimeoutTimer()
 	document.getElementById("gameState").innerHTML = ""
 	canPlay = true
 	yourTurn = playerData.turn
@@ -151,21 +194,24 @@ socket.on("gameStart", function(){
 //////////////////////////////////////////////////////
 //////////////////////////////////////////////////////
 
-//Runs when other player disconnected
-socket.on("playerDisconnect", function(){
+function playerDisconnected(text){
 	//This clears any spinners if they are running
 	clearInterval(loop)
 		
-	document.getElementById("gameState").innerHTML = "Opponent left"
+	document.getElementById("gameState").innerHTML = text
 	
 	document.getElementById("turn").innerHTML = ""
 	createFindGameButton()
 	canPlay = false
-	
+}
+
+//Runs when other player disconnected
+socket.on("playerDisconnect", function(){
+	stopTimeoutTimer()
+	playerDisconnected("Opponent Disconnected")
 })
 
 function restartGame(){
-	console.log(10)
 	document.getElementById("rematchButton").remove()
 	sandwichWithSpinners("gameState", " Waiting for Opponent ")
 
@@ -174,6 +220,7 @@ function restartGame(){
 }
 
 socket.on("gameRestarted", function(newPlayerData){
+	resetTimeoutTimer()
 	playerData = newPlayerData
 	resetBoxes()
 	canPlay = true
@@ -189,6 +236,7 @@ function addLetterToScoreboard(letter){
 
 //Initializes things when the game ends
 function endGameInit(){
+	stopTimeoutTimer()
 	document.getElementById("turn").innerHTML = ""
 	createRematchButton()
 	canPlay = false
@@ -223,6 +271,7 @@ socket.on("tie", function(){
 
 //Switches turns and checks for winner
 socket.on("otherTurn", function(){
+	resetTimeoutTimer()
 	if (checkWinner()){
 		socket.emit("winner", playerData)
 	}else{
@@ -237,6 +286,7 @@ socket.on("otherTurn", function(){
 
 //Switches turn to yours and also updates the board after last move
 socket.on("yourTurn", function(info){
+	resetTimeoutTimer()
 	document.getElementById(info.boxPlayed).innerHTML = info.letter
 	
 	addClassByLetter(info.boxPlayed, info.letter)
