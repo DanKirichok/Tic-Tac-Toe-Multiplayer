@@ -1,9 +1,19 @@
 <html>
     <head>
         <title>Tic Tac Toe</title>
-        <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
-		<link rel="stylesheet" type="text/css" href="style.css">
+        <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="/css/style.css">
         <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+    
+		<link href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />
+		
+		<link href="apple-icon/icon57X57.png" rel="apple-touch-icon" />
+		<link href="apple-icon/icon76X76.png" rel="apple-touch-icon" sizes="76x76" />
+		<link href="apple-icon/icon120X120.png" rel="apple-touch-icon" sizes="120x120" />
+		<link href="apple-icon/icon152X152.png" rel="apple-touch-icon" sizes="152x152" />
+		<link href="apple-icon/icon180X180.png" rel="apple-touch-icon" sizes="180x180" />
+		<link href="android-icon/icon192X192.png" rel="icon" sizes="192x192" />
+		<link href="android-icon/icon192X192.png" rel="icon" sizes="128x128" />
     </head>
     <body>
         <table class = "table-bordered" id = "TicTacToeBoard">
@@ -41,9 +51,13 @@
 				<td class = "score" id = "OScore">0</td>
 			</tr>
 		</table>
-		
-		<script src = "fastclick.js"></script>
+		<form action = "/">
+			<button class = "menuBtn btn btn-info" type = "submit">
+				Menu
+			</button>
+		</form>
+		<script src = "/js/fastclick.js"></script>
         <script src="/socket.io/socket.io.js"></script>
-        <script src = "game.js"></script>
+        <script src = "/js/game.js"></script>
     </body>
 </html>

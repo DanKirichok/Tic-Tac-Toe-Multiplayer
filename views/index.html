@@ -1,15 +1,34 @@
 <html>
     <head>
         <title>Tic Tac Toe</title>
-        <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
-		<link rel="stylesheet" type="text/css" href="style.css">
+        <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+		<link rel="stylesheet" type="text/css" href="/css/style.css">
         <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+    
+		<link href="apple-icon/icon57X57.png" rel="apple-touch-icon" />
+		<link href="apple-icon/icon76X76.png" rel="apple-touch-icon" sizes="76x76" />
+		<link href="apple-icon/icon120X120.png" rel="apple-touch-icon" sizes="120x120" />
+		<link href="apple-icon/icon152X152.png" rel="apple-touch-icon" sizes="152x152" />
+		<link href="apple-icon/icon180X180.png" rel="apple-touch-icon" sizes="180x180" />
+		<link href="android-icon/icon192X192.png" rel="icon" sizes="192x192" />
+		<link href="android-icon/icon192X192.png" rel="icon" sizes="128x128" />
     </head>
     <body>
 		<div id = "title">Tic Tac Toe</div>
 		<div id = "subtitle">Multiplayer Edition</div>
-		<form action = "/game">
-			<input type = "submit" class = "actionBtn btn btn-info" value = "Random" id = "findRandomGameBtn">
-		</form>
+		<div class = "divider"></div>
+		<div class = "container">
+			<form action = "/game">
+				<button type = "submit" class = "startChoiceBtn btn btn-info">
+					<i class="startChoice fa fa-random" aria-hidden="true"></i>
+				</button>
+				<div class = "panel panel-default">
+					<div class = "gameDesc panel-body">
+						Find Random Player
+					</div>
+				</div>
+			</form>
+			
+		</div>
     </body>
 </html>
