@@ -4,6 +4,14 @@ var path = require('path')
 var http = require('http').Server(app)
 var io = require('socket.io')(http)
 
+/////////////////////////////////////////////////////////////////
+//This fixed the issue with long disconnecting times in browsers
+//The interval checks if player is connected every .5 seconds
+//If the player is disconnected for 1 second, they get booted
+/////////////////////////////////////////////////////////////////
+io.set('heartbeat interval', 500);
+io.set('heartbeat timeout', 1000);
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/game', function(req, res){
@@ -116,7 +124,7 @@ initStartValues()
 
 gameRooms = {}
 
-io.on('connection', function(socket){
+io.on('connection', function(socket){	
 	console.log("\nConnection")
 	
 	joinInfo = {}
@@ -132,7 +140,7 @@ io.on('connection', function(socket){
 	playerData.push(joinInfo)
 	
 	usersOn ++
-		
+	
 	socket.emit("playersJoined", joinInfo)
 	
 	socket.on("playerTimeout", function(playerInfo){
@@ -208,14 +216,14 @@ io.on('connection', function(socket){
 })
 
 //This is for openshift deployment
-var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
+/*var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
 var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 
 http.listen(port, ipaddress, function(){
 	console.log('listening on *:4000')
-})
+})*/
 
 //This is for testing
-/*http.listen(4000, function(){
+http.listen(4000, function(){
 	console.log('listening on *:4000')
-})*/
+})
