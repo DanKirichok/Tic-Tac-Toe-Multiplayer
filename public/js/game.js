@@ -5,6 +5,11 @@ playerData = null;
 yourTurn = null;
 canPlay = false;
 
+//This is to force client to disconnect as it takes a while to do on browsers for some reason
+window.onbeforeunload = function(event){
+	socket.disconnect()
+}
+
 //This is the amount of seconds of no activity that will cause you to disconnect
 timeoutTime = 0;
 maxTimeoutTime = 30;
