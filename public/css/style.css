@@ -1,4 +1,7 @@
-
+form{
+	margin: 0px;
+	padding: 0px;
+}
 
 table {
 	margin: 20px auto;
@@ -148,4 +151,19 @@ form{
 
 .divider{
 	height: 60px;
+}
+
+#enterCodeLabel{
+	display: block;
+	text-align: center;
+	font-size: 200%;
+}
+
+#gameCodeInput{
+	margin-top: 20px;
+	margin-bottom: 20px;
+	font-size: 400%;
+	height: auto;
+	width: 100%;
+	text-align: center;
 }

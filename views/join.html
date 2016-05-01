@@ -19,34 +19,8 @@
 		<div class = "divider"></div>
 		<div class = "container">
 			<form action = "/game">
-				<button name = "random" type = "submit" class = "startChoiceBtn btn btn-info">
-					<i class="startChoice fa fa-random" aria-hidden="true"></i>
-				</button>
-				<div class = "panel panel-default">
-					<div class = "gameDesc panel-body">
-						Find Random Player
-					</div>
-				</div>
-				<div class = "divider"></div>
-				<button name = "createPrivate" type = "submit" class = "startChoiceBtn btn btn-info">
-					<i class="fa fa-user-secret" aria-hidden="true"></i>
-				</button>
-				<div class = "panel panel-default">
-					<div class = "gameDesc panel-body">
-						Create Private Lobby
-					</div>
-				</div>
-			</form>
-			<div class = "divider"></div>
-			<form action = "/join">
-				<button name = "joinPrivate" type = "submit" class = "startChoiceBtn btn btn-info">
-					<i class="fa fa-user-plus" aria-hidden="true"></i>
-				</button>
-				<div class = "panel panel-default">
-					<div class = "gameDesc panel-body">
-						Join Private Lobby
-					</div>
-				</div>
+				<label id = "enterCodeLabel">Enter Room Code:</label><input type = "tel" id = "gameCodeInput" class = "form-control" name = "gameCode">
+				<button class = "startChoiceBtn btn btn-info" type = "submit">Join Game</button>
 			</form>
 		</div>
     </body>

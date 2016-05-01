@@ -1,5 +1,7 @@
 var express = require('express')
 var app = express()
+var bodyParser = require('body-parser')
+var fs = require('fs')
 var path = require('path')
 var http = require('http').Server(app)
 var io = require('socket.io')(http)
@@ -13,10 +15,35 @@ io.set('heartbeat interval', 500);
 io.set('heartbeat timeout', 1000);
 
 app.use(express.static(path.join(__dirname, 'public')));
+app.use(bodyParser.urlencoded({
+	extended: true
+}))
+app.use(bodyParser.json())
+
+/////////////////////////////////
+//There are 3 game type options//
+//-random					   //
+//-createPrivate			   //
+//-joinPrivate				   //
+/////////////////////////////////
+
+var gameType;
+function getGameType(gameQuery){
+	for (key in gameQuery){
+		gameType = key.toString()
+	}
+}
+
+app.get('/join', function(req, res){
+	res.sendFile(__dirname + '/views/join.html')
+})
 
 app.get('/game', function(req, res){
+	gameQuery = req.query
+	getGameType(gameQuery)
 	res.sendFile(__dirname + '/views/game.html')
 })
+
 
 app.get('/', function(req, res){
 	res.sendFile(__dirname + '/views/index.html')
@@ -63,7 +90,9 @@ function findOtherPlayer(playerId){
 
 //This is when you have the playerData
 function getOtherPlayer(player){
+	console.log(player)
 	var playerData = gameRooms[player.roomId]
+	
 	var otherPlayer;
 	
 	if (playerData[0].playerNumber == player.playerNumber){
@@ -109,6 +138,17 @@ function initStartValues(){
 	playerData = []
 	usersOn = 1
 	roomId = getRoomId()
+	
+	valueList = {
+		letters: letters,
+		turn: turn,
+		playerData: playerData,
+		usersOn: usersOn,
+		roomId: roomId,
+	}
+	
+	return valueList
+	
 }
 
 function removePlayerFromRoom(playerId){
@@ -120,40 +160,77 @@ function removePlayerFromRoom(playerId){
 	}
 }
 
-initStartValues()
+randomGame = initStartValues()
 
 gameRooms = {}
 
-io.on('connection', function(socket){	
+io.on('connection', function(socket){
 	console.log("\nConnection")
-	
-	joinInfo = {}
-	
-	joinInfo = {
-		id: socket.id,
-		roomId: roomId,
-		playerNumber: usersOn,
-		letter: letters[(usersOn - 1)],
-		turn: turn[usersOn - 1],
-	}
-	
-	playerData.push(joinInfo)
-	
-	usersOn ++
-	
-	socket.emit("playersJoined", joinInfo)
-	
-	socket.on("playerTimeout", function(playerInfo){
-		var otherPlayer = getOtherPlayer(playerInfo)
-		console.log(otherPlayer)		
-		socket.to(otherPlayer.id).emit("playerDisconnect")
-	})
 		
-	if (usersOn > 2){
-		gameRooms[roomId] = playerData
-		io.to(playerData[0].id).emit("gameStart")
-		io.to(playerData[1].id).emit("gameStart")
-		initStartValues()
+	if (gameType == "random"){
+		var joinInfo = {
+			id: socket.id,
+			roomId: randomGame.roomId,
+			playerNumber: randomGame.usersOn,
+			letter: randomGame.letters[(randomGame.usersOn - 1)],
+			turn: randomGame.turn[randomGame.usersOn - 1],
+			roomType: "random",
+		}
+				
+		randomGame.playerData.push(joinInfo)
+		
+		randomGame.usersOn ++
+		
+		socket.emit("playersJoined", joinInfo)
+		
+		if (randomGame.usersOn > 2){
+			gameRooms[roomId] = randomGame.playerData
+			io.to(randomGame.playerData[0].id).emit("gameStart")
+			io.to(randomGame.playerData[1].id).emit("gameStart")
+			randomGame = initStartValues()
+		}
+		
+	}else if (gameType == "createPrivate"){
+		var privateGame = initStartValues()
+		var joinInfo = {
+			id: socket.id,
+			roomId: privateGame.roomId,
+			playerNumber: privateGame.usersOn,
+			letter: privateGame.letters[(privateGame.usersOn - 1)],
+			turn: privateGame.turn[privateGame.usersOn - 1],
+			roomType: "private",
+			gameValues: privateGame,
+		}
+		socket.emit("playersJoined", joinInfo)
+		
+		gameRooms[roomId] = [joinInfo]
+		
+	}else if (gameType == "gameCode"){
+		var gameRoomId = Number(gameQuery.gameCode)
+		console.log(gameRooms[gameRoomId])
+		if (gameRooms[gameRoomId] == undefined){
+			socket.emit("gameNotExist", gameRoomId)
+		}else{
+			var gameValues = gameRooms[gameRoomId][0].gameValues
+			
+			gameValues.usersOn ++
+			
+			var joinInfo = {
+				id: socket.id,
+				roomId: gameValues.roomId,
+				playerNumber: gameValues.usersOn,
+				letter: gameValues.letters[gameValues.usersOn - 1],
+				turn: gameValues.turn[gameValues.usersOn - 1],
+				roomType: "private",
+			}
+						
+			gameRooms[gameRoomId].push(joinInfo)
+			
+			socket.emit("playersJoined", joinInfo)
+			
+			io.to(gameRooms[gameRoomId][0].id).emit("gameStart")
+			io.to(gameRooms[gameRoomId][1].id).emit("gameStart")
+		}
 	}
 	
 	socket.on("winner", function(player){
@@ -168,11 +245,11 @@ io.on('connection', function(socket){
 		io.to(gameRooms[roomId][1].id).emit("tie")
 	})
 	
-	socket.on("playedMove", function(movePlayed){
+	socket.on("playedMove", function(movePlayed){		
 		var otherPlayer = getOtherPlayer(movePlayed.player)
 		
 		var playerRoom = movePlayed.player.roomId
-		
+				
 		info = {
 			boxPlayed: movePlayed.box,
 			letter: movePlayed.player.letter
@@ -200,30 +277,32 @@ io.on('connection', function(socket){
 		console.log("\nDisconnect")
 		
 		removePlayerFromRoom(socket.id)
-		
-		//This means the player is along as he does not have a room
+				
+		//This means the player is alone as he does not have a room
 		if (!findPlayerRoom(socket.id)){
-			initStartValues()
-		}else{
-			var otherPlayerInfo = findOtherPlayer(socket.id)
-						
-			if (otherPlayerInfo != null){
-				var otherPlayer = getOtherPlayer(otherPlayerInfo)
-				io.to(otherPlayer.id).emit("playerDisconnect")
+			randomGame = initStartValues()
+		}else if (!(gameRooms[findPlayerRoom(socket.id)] == undefined)){ 
+			if (!(gameRooms[findPlayerRoom(socket.id)].length == 1)){
+				var otherPlayerInfo = findOtherPlayer(socket.id)
+							
+				if (otherPlayerInfo != null){
+					var otherPlayer = getOtherPlayer(otherPlayerInfo)
+					io.to(otherPlayer.id).emit("playerDisconnect")
+				}
 			}
 		}
 	})
 })
 
 //This is for openshift deployment
-/*var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
+var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
 var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 
 http.listen(port, ipaddress, function(){
 	console.log('listening on *:4000')
-})*/
+})
 
 //This is for testing
-http.listen(4000, function(){
+/*http.listen(4000, function(){
 	console.log('listening on *:4000')
-})
+})*/

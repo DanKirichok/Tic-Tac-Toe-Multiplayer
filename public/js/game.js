@@ -132,11 +132,13 @@ socket.on("connect", function(){
 //Gets player info and initializes turn, data and letter
 socket.on("playersJoined", function(joinInfo){
 	playerData = joinInfo
-	document.getElementById("roomId").innerHTML = "Room ID: " + joinInfo.roomId
+	if (playerData.roomType == "private"){
+		document.getElementById("roomId").innerHTML = "Room Code: " + joinInfo.roomId
+	}
 	document.getElementById("player").innerHTML = "Your Letter: " + joinInfo.letter
 })
 
-function gameStart(){
+function gameStart(){	
 	//Stops spinning the spinny things because they go away
 	clearInterval(loop)
 	document.getElementById("gameState").innerHTML = ""
@@ -159,9 +161,15 @@ function playerDisconnected(text){
 	document.getElementById("gameState").innerHTML = text
 	
 	document.getElementById("turn").innerHTML = ""
-	createFindGameButton()
+	if (playerData.roomType == "random"){
+		createFindGameButton()
+	}
 	canPlay = false
 }
+
+socket.on("gameNotExist", function(roomId){
+	document.getElementById("gameState").innerHTML = "Room " + roomId + " does not exist."
+})
 
 //Runs when other player disconnected
 socket.on("playerDisconnect", function(){
