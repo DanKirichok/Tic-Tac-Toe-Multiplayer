@@ -8,11 +8,11 @@ var io = require('socket.io')(http)
 
 /////////////////////////////////////////////////////////////////
 //This fixed the issue with long disconnecting times in browsers
-//The interval checks if player is connected every .5 seconds
-//If the player is disconnected for 1 second, they get booted
+//The interval checks if player is connected every 1 seconds
+//If the player is disconnected for 5 second, they get booted
 /////////////////////////////////////////////////////////////////
-io.set('heartbeat interval', 500);
-io.set('heartbeat timeout', 1000);
+io.set('heartbeat interval', 1000);
+io.set('heartbeat timeout', 5000);
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({
@@ -90,8 +90,13 @@ function findOtherPlayer(playerId){
 
 //This is when you have the playerData
 function getOtherPlayer(player){
-	console.log(player)
 	var playerData = gameRooms[player.roomId]
+	
+	console.log("\nGame Rooms:")
+	console.log(gameRooms)
+	
+	console.log("\nRoom ID:")
+	console.log(player.roomId)
 	
 	var otherPlayer;
 	
@@ -184,7 +189,7 @@ io.on('connection', function(socket){
 		socket.emit("playersJoined", joinInfo)
 		
 		if (randomGame.usersOn > 2){
-			gameRooms[roomId] = randomGame.playerData
+			gameRooms[randomGame.roomId] = randomGame.playerData
 			io.to(randomGame.playerData[0].id).emit("gameStart")
 			io.to(randomGame.playerData[1].id).emit("gameStart")
 			randomGame = initStartValues()
@@ -203,11 +208,10 @@ io.on('connection', function(socket){
 		}
 		socket.emit("playersJoined", joinInfo)
 		
-		gameRooms[roomId] = [joinInfo]
+		gameRooms[privateGame.roomId] = [joinInfo]
 		
 	}else if (gameType == "gameCode"){
 		var gameRoomId = Number(gameQuery.gameCode)
-		console.log(gameRooms[gameRoomId])
 		if (gameRooms[gameRoomId] == undefined){
 			socket.emit("gameNotExist", gameRoomId)
 		}else{
@@ -283,8 +287,12 @@ io.on('connection', function(socket){
 			randomGame = initStartValues()
 		}else if (!(gameRooms[findPlayerRoom(socket.id)] == undefined)){ 
 			if (!(gameRooms[findPlayerRoom(socket.id)].length == 1)){
+				console.log(gameRooms[findPlayerRoom(socket.id)])
+				
 				var otherPlayerInfo = findOtherPlayer(socket.id)
-							
+				
+				console.log(otherPlayerInfo)
+				
 				if (otherPlayerInfo != null){
 					var otherPlayer = getOtherPlayer(otherPlayerInfo)
 					io.to(otherPlayer.id).emit("playerDisconnect")
@@ -299,7 +307,7 @@ var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
 var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 
 http.listen(port, ipaddress, function(){
-	console.log('listening on *:4000')
+	console.log('Running on Openshift Server')
 })
 
 //This is for testing
