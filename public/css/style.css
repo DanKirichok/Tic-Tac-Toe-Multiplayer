@@ -96,7 +96,7 @@ table {
 .menuBtn{
 	display: block;
 	margin: auto;
-	width: 18vh;
+	width: 20%;
 	margin-top: 5px;
 	margin-bottom: 5px;
 	background-color: #ff77aa !important;
@@ -166,4 +166,28 @@ form{
 	height: auto;
 	width: 100%;
 	text-align: center;
+}
+
+.startScreenX{
+	font-size: 150%;
+}
+
+#loadingContainer{
+	top: 0%;
+	position: absolute;
+}
+
+#searchingText{
+	font-size: 300%;
+	width: 100%;
+	position: absolute;
+	top: 20%;
+	font-weight: bold;
+	text-align: center;
+}
+
+.loadingMenuBtn{
+	position: absolute;
+	top: 80%;
+	left: 40%;
 }

@@ -138,9 +138,20 @@ socket.on("playersJoined", function(joinInfo){
 	document.getElementById("player").innerHTML = "Your Letter: " + joinInfo.letter
 })
 
+function removeSearchAction(){
+	document.getElementById("loadingContainer").remove()
+}
+
+function removeSearchScreen(){
+	document.getElementById("loadingContainer").setAttribute("class", "animated fadeOut")
+	clearInterval(loadingLoop)
+	setTimeout(removeSearchAction, 1500)
+}
+
 function gameStart(){	
 	//Stops spinning the spinny things because they go away
 	clearInterval(loop)
+	removeSearchScreen()
 	document.getElementById("gameState").innerHTML = ""
 	canPlay = true
 	yourTurn = playerData.turn

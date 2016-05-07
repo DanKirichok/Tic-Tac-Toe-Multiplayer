@@ -3,6 +3,7 @@
         <title>Tic Tac Toe</title>
         <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" href="/css/style.css">
+		<link rel="stylesheet" type="text/css" href="/css/animate.css">
         <link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
     
 		<link href="/favicon.ico" rel="shortcut icon" type="image/x-icon" />
@@ -34,9 +35,8 @@
             </tr>
         </table>
         <div id = "gameInfo">
-			<div id = "roomId"></div>
 			<div id = "player"></div>
-			<div id = "gameState"><i class="waitSpinner fa fa-spinner" aria-hidden="true"></i>Searching for Opponent<i class=" waitSpinner fa fa-spinner" aria-hidden="true"></i></div>
+			<div id = "gameState"></div>
 			<div id = "turn"></div>
 		</div>
         <table class = "table-bordered" id = "scoreBoard">
@@ -56,8 +56,24 @@
 				Menu
 			</button>
 		</form>
+		<div id = "loadingContainer">
+			<div id = "searchingContainer">
+				<div id = "searchingText">
+					<div id = "roomId"></div>
+					<i class="waitSpinner fa fa-circle-o-notch" aria-hidden="true"></i>
+						Searching for Opponent
+					<i class=" waitSpinner fa fa-circle-o-notch" aria-hidden="true"></i>
+				</div>
+				<form action = "/">
+					<button class = "menuBtn loadingMenuBtn btn btn-info" type = "submit">
+						Menu
+					</button>
+				</form>
+			</div>
+		</div>
 		<script src = "/js/fastclick.js"></script>
         <script src="/socket.io/socket.io.js"></script>
+        <script src = "/js/loading.js"></script>
         <script src = "/js/game.js"></script>
     </body>
 </html>
