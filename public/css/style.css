@@ -9,13 +9,13 @@ table {
 
 #title{
 	text-align: center;
-	font-size: 400%;
+	font-size: 600%;
 	color: #77aaff;
 	font-weight: 900;
 }
 
 #subtitle{
-	font-size: 250%;
+	font-size: 350%;
 	margin: none;
 	padding: none;
 	text-align: center;
@@ -26,7 +26,7 @@ table {
 #gameInfo{
 	margin: 20px;
 	text-align: center;
-	font-size: 200%;
+	font-size: 300%;
 }
 
 .box{
@@ -76,8 +76,9 @@ table {
 }
 
 .score{
+	margin: 20px;
 	text-align: center;
-	font-size: 200%;
+	font-size: 250%;
 	height: 5vh;
 	width: 18vh;
 }
@@ -85,7 +86,7 @@ table {
 .startChoiceBtn{
 	display: block;
 	margin: auto;
-	width: 25%;
+	width: 50%;
 	min-width: 300px;
 	height: 100px;
 	font-size: 100% !important;
@@ -99,8 +100,9 @@ table {
 	width: 20%;
 	margin-top: 5px;
 	margin-bottom: 5px;
+	font-weight: bold;
 	background-color: #ff77aa !important;
-	font-size: 200% !important;
+	font-size: 350% !important;
 	border: #e56b99 !important;	
 }
 
@@ -134,7 +136,7 @@ table {
 .panel{
 	display: block;
 	margin: auto;
-	width: 25%;
+	width: 50%;
 	min-width: 300px;
 }
 
@@ -145,7 +147,7 @@ form{
 
 .gameDesc{
 	text-align: center;
-	font-size: 150%;
+	font-size: 200%;
 	font-weight: bold;
 }
 
@@ -175,10 +177,12 @@ form{
 #loadingContainer{
 	top: 0%;
 	position: absolute;
+	height: 100%;
+	width: 100%;
 }
 
 #searchingText{
-	font-size: 300%;
+	font-size: 400%;
 	width: 100%;
 	position: absolute;
 	top: 20%;

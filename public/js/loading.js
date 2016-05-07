@@ -1,6 +1,4 @@
 function init(){
-	document.getElementById("loadingContainer").style.height = window.innerHeight
-	document.getElementById("loadingContainer").style.width = window.innerWidth
 	loadingLoop = setInterval(flowBgColor, 1000/100)
 }
 

@@ -287,12 +287,9 @@ io.on('connection', function(socket){
 			randomGame = initStartValues()
 		}else if (!(gameRooms[findPlayerRoom(socket.id)] == undefined)){ 
 			if (!(gameRooms[findPlayerRoom(socket.id)].length == 1)){
-				console.log(gameRooms[findPlayerRoom(socket.id)])
 				
 				var otherPlayerInfo = findOtherPlayer(socket.id)
-				
-				console.log(otherPlayerInfo)
-				
+								
 				if (otherPlayerInfo != null){
 					var otherPlayer = getOtherPlayer(otherPlayerInfo)
 					io.to(otherPlayer.id).emit("playerDisconnect")

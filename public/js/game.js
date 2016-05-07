@@ -151,7 +151,11 @@ function removeSearchScreen(){
 function gameStart(){	
 	//Stops spinning the spinny things because they go away
 	clearInterval(loop)
-	removeSearchScreen()
+	
+	//This checks if the search screen is there before trying to remove it
+	if (document.getElementById("loadingContainer")){
+		removeSearchScreen()
+	}
 	document.getElementById("gameState").innerHTML = ""
 	canPlay = true
 	yourTurn = playerData.turn
