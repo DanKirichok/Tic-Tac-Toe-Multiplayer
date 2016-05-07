@@ -292,7 +292,9 @@ io.on('connection', function(socket){
 								
 				if (otherPlayerInfo != null){
 					var otherPlayer = getOtherPlayer(otherPlayerInfo)
-					io.to(otherPlayer.id).emit("playerDisconnect")
+					if(otherPlayer){
+						io.to(otherPlayer.id).emit("playerDisconnect")
+					}
 				}
 			}
 		}

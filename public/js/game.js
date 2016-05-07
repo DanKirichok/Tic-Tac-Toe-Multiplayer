@@ -183,7 +183,7 @@ function playerDisconnected(text){
 }
 
 socket.on("gameNotExist", function(roomId){
-	document.getElementById("gameState").innerHTML = "Room " + roomId + " does not exist."
+	document.getElementById("searchState").innerHTML = "Room " + roomId + " does not exist."
 })
 
 //Runs when other player disconnected

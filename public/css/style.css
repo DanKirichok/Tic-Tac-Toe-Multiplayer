@@ -195,3 +195,7 @@ form{
 	top: 80%;
 	left: 40%;
 }
+
+#searchState{
+	display: inline;
+}
