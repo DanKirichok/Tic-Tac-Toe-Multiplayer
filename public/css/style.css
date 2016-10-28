@@ -9,13 +9,13 @@ table {
 
 #title{
 	text-align: center;
-	font-size: 600%;
+	font-size: 250%;
 	color: #77aaff;
 	font-weight: 900;
 }
 
 #subtitle{
-	font-size: 350%;
+	font-size: 150%;
 	margin: none;
 	padding: none;
 	text-align: center;
@@ -26,7 +26,7 @@ table {
 #gameInfo{
 	margin: 20px;
 	text-align: center;
-	font-size: 300%;
+	font-size: 150%;
 }
 
 .box{
@@ -78,7 +78,7 @@ table {
 .score{
 	margin: 20px;
 	text-align: center;
-	font-size: 250%;
+	font-size: 150%;
 	height: 5vh;
 	width: 18vh;
 }
@@ -86,23 +86,21 @@ table {
 .startChoiceBtn{
 	display: block;
 	margin: auto;
-	width: 50%;
-	min-width: 300px;
-	height: 100px;
-	font-size: 100% !important;
-	font-size: 400% !important;
+	width: 100%;
+	max-width: 400px;
+	height: 75px;
+	font-size: 200% !important;
 	background-color: #77aaff;
 }
 
 .menuBtn{
 	display: block;
 	margin: auto;
-	width: 20%;
 	margin-top: 5px;
 	margin-bottom: 5px;
 	font-weight: bold;
 	background-color: #ff77aa !important;
-	font-size: 350% !important;
+	font-size: 150% !important;
 	border: #e56b99 !important;	
 }
 
@@ -136,8 +134,8 @@ table {
 .panel{
 	display: block;
 	margin: auto;
-	width: 50%;
-	min-width: 300px;
+	width: 100%;
+	max-width: 400px;
 }
 
 form{
@@ -146,8 +144,9 @@ form{
 }
 
 .gameDesc{
+	position: relative;
 	text-align: center;
-	font-size: 200%;
+	font-size: 150%;
 	font-weight: bold;
 }
 
@@ -164,7 +163,7 @@ form{
 #gameCodeInput{
 	margin-top: 20px;
 	margin-bottom: 20px;
-	font-size: 400%;
+	font-size: 150%;
 	height: auto;
 	width: 100%;
 	text-align: center;
@@ -179,10 +178,11 @@ form{
 	position: absolute;
 	height: 100%;
 	width: 100%;
+	overflow: hidden;
 }
 
 #searchingText{
-	font-size: 400%;
+	font-size: 150%;
 	width: 100%;
 	position: absolute;
 	top: 20%;
@@ -190,12 +190,20 @@ form{
 	text-align: center;
 }
 
-.loadingMenuBtn{
+.menuBtnContainer{
 	position: absolute;
 	top: 80%;
-	left: 40%;
+	width: 100%;
+}
+
+.loadingMenuBtn{
+	
 }
 
 #searchState{
 	display: inline;
+}
+
+#gameContainer{
+	display: none;
 }

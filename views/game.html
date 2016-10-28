@@ -1,6 +1,7 @@
 <html>
     <head>
         <title>Tic Tac Toe</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" href="/css/style.css">
 		<link rel="stylesheet" type="text/css" href="/css/animate.css">
@@ -17,57 +18,59 @@
 		<link href="android-icon/icon192X192.png" rel="icon" sizes="128x128" />
     </head>
     <body>
-        <table class = "table-bordered" id = "TicTacToeBoard">
-            <tr>
-                <td onclick = "boxClick(this)" class = "box" id = "1"></td>
-                <td onclick = "boxClick(this)" class = "box" id = "2"></td>
-                <td onclick = "boxClick(this)" class = "box" id = "3"></td>
-            </tr>
-            <tr>
-                <td onclick = "boxClick(this)" class = "box" id = "4"></td>
-                <td onclick = "boxClick(this)" class = "box" id = "5"></td>
-                <td onclick = "boxClick(this)" class = "box" id = "6"></td>
-            </tr>
-            <tr>
-                <td onclick = "boxClick(this)" class = "box" id = "7"></td>
-                <td onclick = "boxClick(this)" class = "box" id = "8"></td>
-                <td onclick = "boxClick(this)" class = "box" id = "9"></td>
-            </tr>
-        </table>
-        <div id = "gameInfo">
-			<div id = "player"></div>
-			<div id = "gameState"></div>
-			<div id = "turn"></div>
+		<div id = "gameContainer">
+			<table class = "table-bordered" id = "TicTacToeBoard">
+				<tr>
+					<td onclick = "boxClick(this)" class = "box" id = "1"></td>
+					<td onclick = "boxClick(this)" class = "box" id = "2"></td>
+					<td onclick = "boxClick(this)" class = "box" id = "3"></td>
+				</tr>
+				<tr>
+					<td onclick = "boxClick(this)" class = "box" id = "4"></td>
+					<td onclick = "boxClick(this)" class = "box" id = "5"></td>
+					<td onclick = "boxClick(this)" class = "box" id = "6"></td>
+				</tr>
+				<tr>
+					<td onclick = "boxClick(this)" class = "box" id = "7"></td>
+					<td onclick = "boxClick(this)" class = "box" id = "8"></td>
+					<td onclick = "boxClick(this)" class = "box" id = "9"></td>
+				</tr>
+			</table>
+			<div id = "gameInfo">
+				<div id = "player"></div>
+				<div id = "gameState"></div>
+				<div id = "turn"></div>
+			</div>
+			<table class = "table-bordered" id = "scoreBoard">
+				<tr>
+					<td id = "XTag" class = "score">X</td>
+					<td id = "tieTag" class = "score">Tie</td>
+					<td id = "OTag" class = "score">O</td>
+				</tr>
+				<tr>
+					<td class = "score" id = "XScore">0</td>
+					<td class = "score" id = "tieScore">0</td>
+					<td class = "score" id = "OScore">0</td>
+				</tr>
+			</table>
+			<form action = "/">
+				<button class = "menuBtn btn btn-info" type = "submit">
+					Menu
+				</button>
+			</form>
 		</div>
-        <table class = "table-bordered" id = "scoreBoard">
-			<tr>
-				<td id = "XTag" class = "score">X</td>
-				<td id = "tieTag" class = "score">Tie</td>
-				<td id = "OTag" class = "score">O</td>
-			</tr>
-			<tr>
-				<td class = "score" id = "XScore">0</td>
-				<td class = "score" id = "tieScore">0</td>
-				<td class = "score" id = "OScore">0</td>
-			</tr>
-		</table>
-		<form action = "/">
-			<button class = "menuBtn btn btn-info" type = "submit">
-				Menu
-			</button>
-		</form>
 		<div id = "loadingContainer">
 			<div id = "searchingContainer">
 				<div id = "searchingText">
 					<div id = "roomId"></div>
-					<i class="waitSpinner fa fa-circle-o-notch" aria-hidden="true"></i>
 						<div id = "searchState">Searching for Opponent</div>
-					<i class=" waitSpinner fa fa-circle-o-notch" aria-hidden="true"></i>
 				</div>
 				<form action = "/">
-					<button class = "menuBtn loadingMenuBtn btn btn-info" type = "submit">
-						Menu
-					</button>
+					<div class = "menuBtnContainer">
+						<button class = "menuBtn loadingMenuBtn btn btn-info" type = "submit">
+							Menu
+						</button>
+					</div>
 				</form>
 			</div>
 		</div>

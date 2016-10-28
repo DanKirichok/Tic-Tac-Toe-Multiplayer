@@ -26,11 +26,13 @@ function refreshPage(){
 //This rotates the spinny symbol
 degreeRotation = 0 
 function spinObject(){
-	document.getElementsByClassName("waitSpinner")[0].style.transform = "rotate(" + degreeRotation + "deg)"
-	document.getElementsByClassName("waitSpinner")[0].style.webkitTransform = "rotate(" + degreeRotation + "deg)"
-	document.getElementsByClassName("waitSpinner")[1].style.transform = "rotate(" + degreeRotation + "deg)"
-	document.getElementsByClassName("waitSpinner")[1].style.webkitTransform = "rotate(" + degreeRotation + "deg)"
-	degreeRotation += 10
+	if (document.getElementsByClassName("waitSpinner").length > 0){
+		document.getElementsByClassName("waitSpinner")[0].style.transform = "rotate(" + degreeRotation + "deg)"
+		document.getElementsByClassName("waitSpinner")[0].style.webkitTransform = "rotate(" + degreeRotation + "deg)"
+		document.getElementsByClassName("waitSpinner")[1].style.transform = "rotate(" + degreeRotation + "deg)"
+		document.getElementsByClassName("waitSpinner")[1].style.webkitTransform = "rotate(" + degreeRotation + "deg)"
+		degreeRotation += 10
+	}
 }
 
 loop = setInterval(spinObject, 1000/60)
@@ -156,6 +158,7 @@ function gameStart(){
 	if (document.getElementById("loadingContainer")){
 		removeSearchScreen()
 	}
+	document.getElementById("gameContainer").style.display = "block"
 	document.getElementById("gameState").innerHTML = ""
 	canPlay = true
 	yourTurn = playerData.turn

@@ -1,6 +1,7 @@
 <html>
     <head>
         <title>Tic Tac Toe</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
         <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
 		<link rel="stylesheet" type="text/css" href="/css/style.css">
 		<link rel="stylesheet" type="text/css" href="/css/animate.css">
@@ -19,7 +20,7 @@
 		<div id = "subtitle">Multiplayer Edition</div>
 		<div class = "divider"></div>
 		<div class = "container">
-			<form action = "/game">
+			<form class = "startBtnContainer" action = "/game">
 				<button name = "random" type = "submit" class = "startChoiceBtn btn btn-info">
 					<i class="startChoice fa fa-random" aria-hidden="true"></i>
 				</button>
@@ -39,7 +40,7 @@
 				</div>
 			</form>
 			<div class = "divider"></div>
-			<form action = "/join">
+			<form class = "startBtnContainer" action = "/join">
 				<button name = "joinPrivate" type = "submit" class = "startChoiceBtn btn btn-info">
 					<i class="fa fa-user-plus" aria-hidden="true"></i>
 				</button>

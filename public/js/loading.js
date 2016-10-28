@@ -1,3 +1,6 @@
+/*
+ *This flows the background color when searching for a game 
+ */
 function init(){
 	loadingLoop = setInterval(flowBgColor, 1000/100)
 }

@@ -92,11 +92,11 @@ function findOtherPlayer(playerId){
 function getOtherPlayer(player){
 	var playerData = gameRooms[player.roomId]
 	
-	console.log("\nGame Rooms:")
-	console.log(gameRooms)
+	//console.log("\nGame Rooms:")
+	//console.log(gameRooms)
 	
-	console.log("\nRoom ID:")
-	console.log(player.roomId)
+	//console.log("\nRoom ID:")
+	//console.log(player.roomId)
 	
 	var otherPlayer;
 	
@@ -170,7 +170,7 @@ randomGame = initStartValues()
 gameRooms = {}
 
 io.on('connection', function(socket){
-	console.log("\nConnection")
+	//console.log("\nConnection")
 		
 	if (gameType == "random"){
 		var joinInfo = {
@@ -278,7 +278,7 @@ io.on('connection', function(socket){
 	//DISCONNECT//
 	//////////////
 	socket.on('disconnect', function(){
-		console.log("\nDisconnect")
+		//console.log("\nDisconnect")
 		
 		removePlayerFromRoom(socket.id)
 				
@@ -302,14 +302,14 @@ io.on('connection', function(socket){
 })
 
 //This is for openshift deployment
-var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
+/*var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
 var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
 
 http.listen(port, ipaddress, function(){
 	console.log('Running on Openshift Server')
-})
+})*/
 
 //This is for testing
-/*http.listen(4000, function(){
+http.listen(4000, function(){
 	console.log('listening on *:4000')
-})*/
+})
