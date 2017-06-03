@@ -302,14 +302,19 @@ io.on('connection', function(socket){
 })
 
 //This is for openshift deployment
-/*var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
-var port = process.env.OPENSHIFT_NODEJS_PORT || 8080;
+
+var ipaddress = process.env.OPENSHIFT_NODEJS_IP || "127.0.0.1";
+
+var port = process.env.OPENSHIFT_NODEJS_PORT || 4000;
 
 http.listen(port, ipaddress, function(){
 	console.log('Running on Openshift Server')
-})*/
+})
 
+/*
 //This is for testing
 http.listen(4000, function(){
 	console.log('listening on *:4000')
 })
+*/
+
